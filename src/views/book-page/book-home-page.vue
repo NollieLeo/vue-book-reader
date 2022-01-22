@@ -4,20 +4,32 @@
     <a-affix :top="20" @change="handleScrollChange">
       <div :class="bookSearchBarCls">
         <h1 v-if="!isAffix" style="text-align: center">搜索图书</h1>
-        <a-input-search
-          placeholder="输入图书名称"
-          enter-button
-          allowClear
-          :size="inputSize"
-          :default-value="defaultSearchValue"
-          @search="handleSearch"
-          :loading="isFetching"
-        />
+        <!-- searchForm -->
+        <div class="book-page-searchform">
+          <a-select
+            default-value="new"
+            style="width: 120px"
+            @change="handleSortChange"
+            :size="inputSize"
+          >
+            <a-select-option value="new"> 最新 </a-select-option>
+            <a-select-option value="hot"> 最热 </a-select-option>
+            <a-select-option value="vote"> 推荐 </a-select-option>
+          </a-select>
+          <a-input-search
+            placeholder="输入图书名称"
+            enter-button
+            allowClear
+            :size="inputSize"
+            @change="handleChangeSearchValue"
+            @search="handleSearch"
+            :loading="isFetching"
+          />
+        </div>
       </div>
     </a-affix>
     <!-- 主要内容 -->
-    <div v-if="!searchValue" class="empty">请搜索图书</div>
-    <div class="book-page-container" v-else>
+    <div class="book-page-container">
       <a-list
         :loading="isFetching"
         :locale="{ emptyText: '暂无图书' }"
@@ -46,22 +58,49 @@
           </div>
         </a-list-item>
       </a-list>
+
+      <a-pagination
+        v-model="currentPage"
+        :total="paginationInfo.totalItemCount"
+        show-less-items
+        :defaultPageSize="15"
+        class="book-page-pagination"
+      />
     </div>
   </div>
 </template>
 <script>
 import handleLoadBook from "./api/handleLoadBook";
 
+const defaultPage = 1;
+
 export default {
   name: "book-home-page",
   data() {
     return {
       books: [],
-      searchValue: "",
       isFetching: false,
-      defaultSearchValue: "javascript",
       isAffix: false,
+
+      // form data & page data
+      searchValue: "",
+      sortedValue: "new",
+      currentPage: defaultPage,
+      paginationInfo: {},
     };
+  },
+  watch: {
+    currentPage(val, olderVal) {
+      if (val !== olderVal) {
+        this.handleSearch();
+      }
+    },
+    sortedValue(val, olderVal) {
+      if (val !== olderVal) {
+        this.resetCurrentPage();
+        this.handleSearch();
+      }
+    },
   },
   computed: {
     bookSearchBarCls() {
@@ -75,22 +114,42 @@ export default {
     },
   },
   created() {
-    this.handleSearch(this.defaultSearchValue);
+    this.handleSearch();
   },
   methods: {
+    resetCurrentPage() {
+      this.currentPage = defaultPage;
+    },
+    resetSearchValue() {
+      this.searchValue = "";
+    },
+    resetAllSort() {
+      this.resetCurrentPage();
+    },
+    handleSortChange(value) {
+      this.sortedValue = value;
+    },
+    handleChangeSearchValue(e) {
+      this.searchValue = e.target.value;
+    },
     handleScrollChange(affix) {
       this.isAffix = affix;
     },
     goDetails(bookId, bookName) {
       this.$router.push(`/book-details/${bookId}/${bookName}`);
     },
-    async handleSearch(value) {
-      this.searchValue = value;
+    async handleSearch() {
       this.isFetching = true;
       try {
-        const res = await handleLoadBook.call(this, value);
+        const res = await handleLoadBook.call(
+          this,
+          this.searchValue,
+          this.currentPage,
+          this.sortedValue
+        );
         if (res.status === 200) {
           this.books = res.data.bookItems;
+          this.paginationInfo = res.data.pagination;
         }
         this.isFetching = false;
       } catch (error) {

@@ -1,10 +1,10 @@
-export default function (value) {
+export default function (value, currentPage, sort) {
   const searchParams = {
     categoryId: 0,
     edition: 4,
     name: value,
-    page: 1,
-    sort: "new",
+    page: currentPage || 1,
+    sort,
   };
   return this.$http({
     url: `https://api.ituring.com.cn/api/Search/Advanced`,

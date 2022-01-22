@@ -1,11 +1,13 @@
 "use strict";
 
-import { app, protocol, BrowserWindow, ipcMain, dialog } from "electron";
+import { app, protocol, BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
+import registryFiledownloadsEvents from "./services/main/file-downloads";
+
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-let mainWindow;
+export let mainWindow;
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -15,8 +17,8 @@ protocol.registerSchemesAsPrivileged([
 async function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1000,
+    height: 800,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
@@ -35,6 +37,7 @@ async function createWindow() {
     // Load the index.html when not in development
     mainWindow.loadURL("app://./index.html");
   }
+  registryFiledownloadsEvents();
 }
 
 // Quit when all windows are closed.
@@ -81,21 +84,9 @@ if (isDevelopment) {
     });
   }
 }
-
-/**
- * 打开文件选择框
- * @param oldPath - 上一次打开的路径
- */
-const openFileDialog = async (oldPath = app.getPath("downloads")) => {
-  if (!mainWindow) return oldPath;
-
-  const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
-    title: "选择保存位置",
-    properties: ["openDirectory", "createDirectory"],
-    defaultPath: oldPath,
-  });
-
-  return !canceled ? filePaths[0] : oldPath;
-};
-
-ipcMain.handle("openFileDialog", (event, oldPath) => openFileDialog(oldPath));
+// ipcMain.handle("handleFileDownload", (_event, downLoadPath, downLoadUrl) => {
+//   mainWindow.webContents.downLoadUrl(downLoadUrl);
+//   session.defaultSession.on("will-download", (event, item, webContents) => {
+//     item.setSavePath(downLoadPath);
+//   });
+// });

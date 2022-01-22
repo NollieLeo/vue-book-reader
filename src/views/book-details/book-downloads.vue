@@ -17,7 +17,10 @@
   </div>
 </template>
 <script>
-import { ipcRenderer } from "electron";
+import {
+  handleOpenFileDialog,
+  handleNewFileDownLoad,
+} from "../../services/rendereer";
 export default {
   name: "book-downloads",
   props: {
@@ -28,8 +31,15 @@ export default {
   methods: {
     async handleDownLoad(name, url) {
       try {
-        const path = await ipcRenderer.invoke("openFileDialog", url);
-        console.log(path);
+        const path = await handleOpenFileDialog();
+        if (!path) {
+          this.$notification.open({
+            title: "提示",
+            description: "文件地址不存在",
+          });
+        }
+        await handleNewFileDownLoad(url, name, path);
+        console.log(name, url, path);
       } catch (error) {
         throw new Error(error);
       }
