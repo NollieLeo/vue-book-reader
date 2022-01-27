@@ -1,3 +1,4 @@
+<!-- 在线阅读的tab页面  -->
 <template lang="">
   <div class="book-chapter">
     <div
@@ -6,11 +7,9 @@
       :key="chapter.id"
     >
       <h3
-        :class="getChapterNameCls(chapter.isCompleted && chapter.isFree)"
+        :class="getChapterNameCls(chapter.isFree)"
         @click="
-          chapter.isCompleted &&
-            chapter.isFree &&
-            linkToChapterDetails(chapter.id, chapter.subject)
+          chapter.isFree && linkToChapterDetails(chapter.id, chapter.subject)
         "
       >
         {{ chapter.subject }}
@@ -66,6 +65,11 @@ export default {
 .book-chapter-tag {
   margin-left: auto;
   margin-right: 0;
+  display: flex;
+  align-items: center;
+}
+.book-chapter-tag > * + * {
+  margin-left: 10px;
 }
 .book-chapter-name-clickable {
   cursor: pointer;

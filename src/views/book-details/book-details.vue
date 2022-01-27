@@ -37,16 +37,16 @@
             <div class="book-details-from">
               <p>
                 <span>作者：</span>
-                <a> {{ bookDetail.authorNameString }} </a>
+                <span> {{ bookDetail.authorNameString || "未知" }} </span>
               </p>
               <p>
                 <span>译者：</span>
-                <a> {{ bookDetail.translatorNameString }} </a>
+                <span> {{ bookDetail.translatorNameString || "未知" }} </span>
               </p>
             </div>
             <div class="book-details-abstract">
               <h3>简介：</h3>
-              <p>{{ bookDetail.abstract }}</p>
+              <p>{{ bookDetail.abstract || "暂无本书简介" }}</p>
             </div>
           </div>
         </section>
@@ -71,9 +71,24 @@
             <a-tab-pane key="others">
               <span slot="tab">
                 <a-icon type="profile" />
-                其他
+                价格参考
               </span>
-              暂无数据...
+              <div v-if="salesLists.length">
+                <a
+                  href=""
+                  v-for="(priceLinkKey, index) in salesLists"
+                  :key="index"
+                  @click="
+                    openPriceLinkThroughDefaultBrowser(
+                      $event,
+                      bookDetail.externalSalesInfo[priceLinkKey]
+                    )
+                  "
+                >
+                  {{ renderLinkNameByType(priceLinkKey) }}
+                </a>
+              </div>
+              <span v-else>暂无价格列表</span>
             </a-tab-pane>
           </a-tabs>
         </section>
@@ -86,6 +101,15 @@ import loadDetails from "./apis/loadBookDetails";
 import BookChapter from "./book-chapter.vue";
 import BookIntroduce from "./book-introduce.vue";
 import BookDownloads from "./book-downloads.vue";
+import { shell } from "electron";
+
+const priceType = {
+  saleAmazonUrl: "亚马逊",
+  saleDangdangUrl: "当当网",
+  saleJingdongUrl: "京东",
+  saleTaobaoUrl: "淘宝",
+  saleChinapubUrl: "天猫",
+};
 
 export default {
   name: "book-details",
@@ -103,8 +127,22 @@ export default {
       downLoadModalVisible: false,
     };
   },
+
   mounted() {
     this.loadCurrentBookDetails();
+  },
+
+  computed: {
+    salesLists() {
+      const keys = Object.keys(this.bookDetail.externalSalesInfo || {});
+      let exsitKeys = [];
+      keys.forEach((key) => {
+        if (this.bookDetail.externalSalesInfo[key]) {
+          exsitKeys.push(key);
+        }
+      });
+      return exsitKeys;
+    },
   },
   methods: {
     async loadCurrentBookDetails() {
@@ -119,6 +157,16 @@ export default {
         this.isFetching = false;
         throw new Error(error);
       }
+    },
+
+    renderLinkNameByType(type) {
+      return priceType[type] || "-";
+    },
+
+    // 通过系统自带的浏览器打开网页
+    openPriceLinkThroughDefaultBrowser(e, url) {
+      e.preventDefault();
+      shell.openExternal(url);
     },
   },
 };

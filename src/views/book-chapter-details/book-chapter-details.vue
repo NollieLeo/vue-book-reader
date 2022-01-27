@@ -1,5 +1,7 @@
 <template>
   <div class="book-chapter-details">
+    <a-back-top />
+
     <a-affix :top="20">
       <book-header-bar class="book-chapter-header" :title="title">
         <template>
@@ -99,8 +101,7 @@ export default {
         next: this.nextChapter,
       };
       if (chapterObj[type]) {
-        const bookName = this.title.split("-")[0];
-        const bookAndChapterName = `${bookName}-${chapterObj[type].subject}`;
+        const bookAndChapterName = `${this.bookName}-${chapterObj[type].subject}`;
         this.$router.push({
           name: "book-chapter-details",
           params: {
