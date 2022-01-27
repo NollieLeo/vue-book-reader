@@ -5,10 +5,18 @@
       v-for="chapter in chapters"
       :key="chapter.id"
     >
-      <h3 :class="getChapterNameCls(chapter.isCompleted)">
+      <h3
+        :class="getChapterNameCls(chapter.isCompleted && chapter.isFree)"
+        @click="
+          chapter.isCompleted &&
+            chapter.isFree &&
+            linkToChapterDetails(chapter.id, chapter.subject)
+        "
+      >
         {{ chapter.subject }}
       </h3>
       <div class="book-chapter-tag">
+        <a-icon v-if="!chapter.isFree" type="lock" />
         <a-tag :color="getTagColor(chapter.isCompleted)">
           {{ getStatusText(chapter.isCompleted) }}
         </a-tag>
@@ -20,13 +28,19 @@
 export default {
   name: "book-chapter",
   methods: {
+    linkToChapterDetails(id, name) {
+      const bookNameAndChapterNameString = `${this.$route.params.name}-${name}`;
+      this.$router.push(
+        `/book-chapter-details/${id}/${bookNameAndChapterNameString}`
+      );
+    },
     getStatusText(isCompleted) {
       return isCompleted ? "已完成" : "未完成";
     },
-    getChapterNameCls(isCompleted) {
+    getChapterNameCls(isClickable) {
       return {
         "book-chapter-name": true,
-        "book-chapter-name-clickable": isCompleted,
+        "book-chapter-name-clickable": isClickable,
       };
     },
     getTagColor(isCompleted) {

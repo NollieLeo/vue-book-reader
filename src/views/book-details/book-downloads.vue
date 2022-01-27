@@ -39,7 +39,6 @@ export default {
           });
         }
         await handleNewFileDownLoad(url, name, path);
-        console.log(name, url, path);
       } catch (error) {
         throw new Error(error);
       }

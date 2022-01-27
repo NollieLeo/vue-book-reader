@@ -1,5 +1,7 @@
 .book-details {
   margin-top: 20px;
+  max-width: 80%;
+  margin: 0 auto;
 }
 .book-details-buttons {
   position: fixed;
@@ -13,7 +15,6 @@
   border-radius: 5px;
 }
 .book-details > main {
-  max-width: 80%;
   margin: 0 auto;
   margin-top: 30px;
 }

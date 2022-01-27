@@ -5,6 +5,7 @@ import axios from "axios";
 import store from "./store";
 import Antd from "ant-design-vue";
 import "ant-design-vue/dist/antd.css";
+import "./components/registry";
 
 Vue.http = Vue.prototype.$http = axios;
 

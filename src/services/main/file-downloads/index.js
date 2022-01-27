@@ -3,7 +3,12 @@ import { app, dialog } from "electron";
 import { mainWindow } from "../../../background";
 import { session } from "electron";
 import { FILE_DIALOG_OPEN_HANDLE, FILE_DOWNLOAD_HANDLE } from "../../CONSTANTS";
-import { getFileName, pathJoin, isExistFile } from "@/utils";
+import {
+  getFileName,
+  pathJoin,
+  isExistFile,
+  showNotification,
+} from "../../../utils";
 import { v4 as uuidV4 } from "uuid";
 
 let newDownloadItem = null;
@@ -77,7 +82,6 @@ const handleNewFileDownLoad = ({ url, fileName, path }) => {
 const listenFileDownload = (_event, downloadItem) => {
   // 新建下载为空时，会执行 electron 默认的下载处理
   if (!newDownloadItem) return;
-  // let prevReceivedBytes = 0; // 记录上一次下载的字节数据
 
   // 阻止系统保存对话框, 不然会自己跳出来一个下载框，就离谱
   // 就是相当于自己确定了一个路径就不需要用系统自带的了
@@ -85,11 +89,22 @@ const listenFileDownload = (_event, downloadItem) => {
 
   downloadItem.on("updated", (_event, state) => {
     if (state === "interrupted") {
-      console.log("Download is interrupted but can be resumed");
+      showNotification({
+        title: "下载通知",
+        body: "Download is interrupted but can be resumed",
+      });
     } else if (state === "progressing") {
       if (downloadItem.isPaused()) {
-        console.log("Download is paused");
+        showNotification({
+          title: "下载通知",
+          body: "Download is paused",
+        });
       } else {
+        // 计算下载进度
+        const progress =
+          downloadItem.getReceivedBytes() / downloadItem.getTotalBytes();
+        // 设置win的下载loading效果
+        mainWindow.setProgressBar(progress);
         console.log(`Received bytes: ${downloadItem.getReceivedBytes()}`);
       }
     }
@@ -97,9 +112,15 @@ const listenFileDownload = (_event, downloadItem) => {
 
   downloadItem.once("done", (_event, state) => {
     if (state === "completed") {
-      console.log("Download successfully");
+      showNotification({
+        title: "下载成功",
+        body: "Download successfully",
+      });
     } else {
-      console.log(`Download failed: ${state}`);
+      showNotification({
+        title: "下载失败",
+        body: "Download failed",
+      });
     }
   });
 };

@@ -16,6 +16,12 @@ export default new Router({
       name: "book-details",
     },
     {
+      path: "/book-chapter-details/:chapterId/:bookAndChapterName",
+      component: () =>
+        import("@/views/book-chapter-details/book-chapter-details.vue"),
+      name: "book-chapter-details",
+    },
+    {
       path: "*",
       redirect: "/",
     },

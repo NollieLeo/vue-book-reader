@@ -19,13 +19,7 @@
     </aside>
     <div class="book-details">
       <header>
-        <a-button
-          type="dashed"
-          shape="circle"
-          icon="arrow-left"
-          @click="$router.go(-1)"
-        ></a-button>
-        <span> {{ currentBookName }} </span>
+        <book-header-bar :title="currentBookName"></book-header-bar>
       </header>
       <main>
         <section class="book-details-detailBox">
