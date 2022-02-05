@@ -3,12 +3,13 @@
 import { app, protocol, BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
+import { isDevelopment } from "./constants";
+import path from "path";
 import {
   registryFiledownloadsEvents,
   registryTrayPanel,
+  regsiterMenuEvents,
 } from "./services/main";
-
-const isDevelopment = process.env.NODE_ENV !== "production";
 
 export let mainWindow;
 
@@ -18,6 +19,8 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 async function createWindow() {
+  const iconPath = path.join(__dirname, "..", "src/assets/aotoman.ico");
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1000,
@@ -29,6 +32,7 @@ async function createWindow() {
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
       webSecurity: false,
     },
+    icon: iconPath,
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -40,10 +44,24 @@ async function createWindow() {
     // Load the index.html when not in development
     mainWindow.loadURL("app://./index.html");
   }
+
+  // 监听主窗口的关闭事件，这里禁用默认的关闭事件，让他在后台
+  mainWindow.on("close", (e) => {
+    e.preventDefault();
+    mainWindow.hide();
+  });
+
+  // 监听将要展开的事件
+  mainWindow.on("ready-to-show", () => {
+    mainWindow.show();
+  });
+
   // 注册文件下载的所有事件
   registryFiledownloadsEvents();
-
+  // 注册托盘事件
   registryTrayPanel();
+  // 注册菜单
+  regsiterMenuEvents();
 }
 
 // Quit when all windows are closed.
@@ -90,9 +108,3 @@ if (isDevelopment) {
     });
   }
 }
-// ipcMain.handle("handleFileDownload", (_event, downLoadPath, downLoadUrl) => {
-//   mainWindow.webContents.downLoadUrl(downLoadUrl);
-//   session.defaultSession.on("will-download", (event, item, webContents) => {
-//     item.setSavePath(downLoadPath);
-//   });
-// });

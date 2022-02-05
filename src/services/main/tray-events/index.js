@@ -1,5 +1,8 @@
-import { Tray, Menu } from "electron";
+// tray 的事件处理，注册
+
+import { Tray, Menu, BrowserWindow } from "electron";
 import path from "path";
+import { mainWindow } from "../../../background";
 
 let bookTrayPanel;
 
@@ -10,10 +13,15 @@ const contextMenu = Menu.buildFromTemplate([
       bookTrayPanel.destroy();
     },
   },
+  { type: "separator" },
   {
-    label: "打开新窗口",
+    label: "打开electron官网",
     click: () => {
-      console.log("open new browser");
+      let child = new BrowserWindow({
+        parent: BrowserWindow.getFocusedWindow(),
+      });
+      child.loadURL("https://electronjs.org");
+      child.show();
     },
   },
 ]);
@@ -27,6 +35,21 @@ function registryTrayPanel() {
   bookTrayPanel = new Tray(iconPath);
   bookTrayPanel.setToolTip("book-reader");
   bookTrayPanel.setContextMenu(contextMenu);
+
+  // 监听双击事件，双击控制隐藏或者是显示
+  // 注：此效果在windows上良好，在mac下会有兼容性问题，双击事件可能失效，实际使用过程中要注意。
+  bookTrayPanel.on("double-click", () => {
+    if (!mainWindow) return;
+    const isVisible = mainWindow.isVisible();
+    if (!isVisible) {
+      mainWindow.restore();
+      // windows下如果hide之后不调用show方法而是只调用restore方法就会导致页面挂住不能用
+
+      mainWindow.show();
+    } else {
+      mainWindow.hide();
+    }
+  });
 }
 
 export { bookTrayPanel, registryTrayPanel };
