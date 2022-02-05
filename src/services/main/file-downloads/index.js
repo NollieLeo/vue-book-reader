@@ -143,4 +143,4 @@ const registryFiledownloadsEvents = () => {
   session.defaultSession.on("will-download", listenFileDownload);
 };
 
-export default registryFiledownloadsEvents;
+export { registryFiledownloadsEvents };

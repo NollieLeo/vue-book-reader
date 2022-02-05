@@ -3,7 +3,10 @@
 import { app, protocol, BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
-import registryFiledownloadsEvents from "./services/main/file-downloads";
+import {
+  registryFiledownloadsEvents,
+  registryTrayPanel,
+} from "./services/main";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -37,7 +40,10 @@ async function createWindow() {
     // Load the index.html when not in development
     mainWindow.loadURL("app://./index.html");
   }
+  // 注册文件下载的所有事件
   registryFiledownloadsEvents();
+
+  registryTrayPanel();
 }
 
 // Quit when all windows are closed.
