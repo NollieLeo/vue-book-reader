@@ -1,0 +1,62 @@
+.app-header {
+  &-mac {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #dcdcdc;
+    background-color: #47a2a5f0;
+  }
+  &-img {
+    margin: 0 auto;
+    flex: 1;
+    text-align: center;
+    -webkit-app-region: drag;
+    > img {
+      width: 25px;
+      height: 25px;
+      border-radius: 4px;
+    }
+    > span {
+      margin-left: 10px;
+      color: #fff;
+    }
+  }
+  &-dot-btn {
+    border-radius: 50%;
+    font-size: 9px;
+    background-color: #ccccccf0;
+    width: 15px;
+    height: 15px;
+    text-align: center;
+    line-height: 15px;
+    & {
+      i {
+        opacity: 0;
+      }
+    }
+    &:hover {
+      i {
+        opacity: 1;
+      }
+    }
+    & + & {
+      margin-left: 8px;
+    }
+  }
+  &-btns {
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    color: #1d1d1d;
+    font-weight: bold;
+    .yellow {
+      background: #e2aa0d;
+    }
+    .red {
+      background: #f12403bf;
+    }
+    .green {
+      background: #34d434;
+    }
+  }
+}
