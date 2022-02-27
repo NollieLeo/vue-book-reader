@@ -1,14 +1,12 @@
-import { ipcMainHandle } from "../../../utils/main";
+import { ipcMainHandle } from "@/utils/main";
 import { app, dialog } from "electron";
-import { mainWindow } from "../../../background";
+import { mainWindow } from "@/background";
 import { session } from "electron";
-import { FILE_DIALOG_OPEN_HANDLE, FILE_DOWNLOAD_HANDLE } from "../../CONSTANTS";
 import {
-  getFileName,
-  pathJoin,
-  isExistFile,
-  showNotification,
-} from "../../../utils";
+  FILE_DIALOG_OPEN_HANDLE,
+  FILE_DOWNLOAD_HANDLE,
+} from "@/services/CONSTANTS";
+import { getFileName, pathJoin, isExistFile, showNotification } from "@/utils";
 import { v4 as uuidV4 } from "uuid";
 
 let newDownloadItem = null;
@@ -44,7 +42,7 @@ const openFileDialog = async (
 /**
  * 处理文件下载
  * @param {*} { url, fileName, path }
- * @return {*}
+ * @return {object}
  */
 const handleNewFileDownLoad = ({ url, fileName, path }) => {
   const newFileName = getFileName(fileName || "", url); // 处理文件名

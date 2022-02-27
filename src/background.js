@@ -3,11 +3,12 @@
 import { app, protocol, BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
-import { isDevelopment } from "./constants";
+import { isDevelopment, IS_WIN } from "./constants";
 import path from "path";
 import {
   registryFiledownloadsEvents,
   registryTrayPanel,
+  registryWindowEvents,
   regsiterMenuEvents,
 } from "./services/main";
 
@@ -33,6 +34,7 @@ async function createWindow() {
       webSecurity: false,
     },
     icon: iconPath,
+    frame: false,
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -45,16 +47,19 @@ async function createWindow() {
     mainWindow.loadURL("app://./index.html");
   }
 
-  // 监听主窗口的关闭事件，这里禁用默认的关闭事件，让他在后台
-  mainWindow.on("close", (e) => {
-    e.preventDefault();
-    mainWindow.hide();
-  });
+  // // 监听主窗口的关闭事件，这里禁用默认的关闭事件，让他在后台
+  // mainWindow.on("close", (e) => {
+  //   e.preventDefault();
+  //   mainWindow.hide();
+  // });
 
-  // 监听将要展开的事件
-  mainWindow.on("ready-to-show", () => {
-    mainWindow.show();
-  });
+  // // 监听将要展开的事件
+  // mainWindow.on("ready-to-show", () => {
+  //   mainWindow.show();
+  // });
+
+  // 注册win的操作
+  registryWindowEvents();
 
   // 注册文件下载的所有事件
   registryFiledownloadsEvents();
@@ -96,7 +101,7 @@ app.on("ready", async () => {
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
-  if (process.platform === "win32") {
+  if (IS_WIN) {
     process.on("message", (data) => {
       if (data === "graceful-exit") {
         app.quit();

@@ -2,7 +2,7 @@
 
 import { Tray, Menu, BrowserWindow } from "electron";
 import path from "path";
-import { mainWindow } from "../../../background";
+import { mainWindow } from "@/background";
 
 let bookTrayPanel;
 
@@ -44,7 +44,6 @@ function registryTrayPanel() {
     if (!isVisible) {
       mainWindow.restore();
       // windows下如果hide之后不调用show方法而是只调用restore方法就会导致页面挂住不能用
-
       mainWindow.show();
     } else {
       mainWindow.hide();
