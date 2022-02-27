@@ -1,7 +1,15 @@
+/*
+ * @Author: 翁恺敏
+ * @Date: 2022-02-08 14:37:09
+ * @LastEditors: 翁恺敏
+ * @LastEditTime: 2022-02-27 17:23:29
+ * @FilePath: /vue-book-reader/src/services/main/menu-events/index.js
+ * @Description:
+ */
 // 头部menu的注册api
 import { Menu, dialog, BrowserWindow } from "electron";
-import { isDevelopment } from "../../../constants";
-import { mainWindow } from "../../../background";
+import { isDevelopment } from "@/constants";
+import { mainWindow } from "@/background";
 
 const menuTemplate = [
   {

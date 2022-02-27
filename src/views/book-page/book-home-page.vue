@@ -1,7 +1,7 @@
 <template lang="">
   <div class="book-page-home">
     <!-- 搜索条 -->
-    <a-affix :top="20" @change="handleScrollChange">
+    <a-affix :target="() => affixTarget" @change="handleScrollChange">
       <div :class="bookSearchBarCls">
         <h1 v-if="!isAffix" style="text-align: center">搜索图书</h1>
         <!-- searchForm -->
@@ -111,6 +111,11 @@ export default {
     },
     inputSize() {
       return this.isAffix ? "large" : "default";
+    },
+    affixTarget() {
+      const target = document.querySelector(".app-container");
+      console.log(target);
+      return target;
     },
   },
   created() {

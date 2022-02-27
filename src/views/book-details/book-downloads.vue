@@ -1,3 +1,11 @@
+<!--
+ * @Author: 翁恺敏
+ * @Date: 2022-02-08 14:37:09
+ * @LastEditors: 翁恺敏
+ * @LastEditTime: 2022-02-27 17:19:55
+ * @FilePath: /vue-book-reader/src/views/book-details/book-downloads.vue
+ * @Description: 
+ -->
 <template lang="">
   <div class="book-details-downloads">
     <div
@@ -20,7 +28,7 @@
 import {
   handleOpenFileDialog,
   handleNewFileDownLoad,
-} from "../../services/rendereer";
+} from "@/services/rendereer";
 export default {
   name: "book-downloads",
   props: {

@@ -5,7 +5,7 @@
 .book-page-home {
   max-width: 80%;
   margin: 0 auto;
-  margin-top: 40px;
+  padding-top: 40px;
 }
 .book-page-searchbar-affix {
   display: flex;
@@ -20,6 +20,7 @@
 
 .book-page-listitem {
   display: flex;
+  height: 136px;
 }
 
 .book-page-listitem-img {

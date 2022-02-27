@@ -1,0 +1,7 @@
+{
+  "eslint.enable": true,
+  "eslint.validate": ["javascript", "javascriptreact", "vue"],
+  "eslint.format.enable": true,
+  "editor.formatOnSave": true,
+  "eslint.alwaysShowStatus": true
+}
