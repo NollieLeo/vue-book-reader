@@ -4,8 +4,9 @@
       <img src="@/assets/applogo.png" />
       <span>Book Reader</span>
     </div>
+    <div class="app-header-drag_content"></div>
     <div class="app-header-btns">
-      <div class="app-header-btn" @click="handleWindowMinimize">
+      <div class="app-header-btn" @click="handleWinMinimize">
         <a-icon type="line"></a-icon>
       </div>
       <div class="app-header-btn" @click="handleWinToggle">
@@ -46,7 +47,7 @@ export default {
       await handleWinFullScreenToggle(this.isMax);
       this.isMax = !this.isMax;
     },
-    handleWindowMinimize() {
+    handleWinMinimize() {
       handleWindowMinimize();
     },
   },
