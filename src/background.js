@@ -2,7 +2,7 @@
 
 import { app, protocol, BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
-import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
+// import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { isDevelopment, IS_WIN } from "./constants";
 import path from "path";
 import {
@@ -21,7 +21,6 @@ protocol.registerSchemesAsPrivileged([
 
 async function createWindow() {
   const iconPath = path.join(__dirname, "..", "src/assets/aotoman.ico");
-
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1000,
@@ -48,19 +47,18 @@ async function createWindow() {
   }
 
   // // 监听主窗口的关闭事件，这里禁用默认的关闭事件，让他在后台
-  // mainWindow.on("close", (e) => {
-  //   e.preventDefault();
-  //   mainWindow.hide();
-  // });
+  mainWindow.on("close", (e) => {
+    e.preventDefault();
+    if (IS_WIN) mainWindow.hide();
+  });
 
   // // 监听将要展开的事件
-  // mainWindow.on("ready-to-show", () => {
-  //   mainWindow.show();
-  // });
+  mainWindow.on("ready-to-show", () => {
+    mainWindow.show();
+  });
 
   // 注册win的操作
   registryWindowEvents();
-
   // 注册文件下载的所有事件
   registryFiledownloadsEvents();
   // 注册托盘事件
@@ -81,21 +79,23 @@ app.on("window-all-closed", () => {
 app.on("activate", () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  if (BrowserWindow.getAllWindows().length === 0 || !mainWindow) {
+    createWindow();
+  }
 });
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
-  if (isDevelopment && !process.env.IS_TEST) {
-    // Install Vue Devtools
-    try {
-      await installExtension(VUEJS_DEVTOOLS);
-    } catch (e) {
-      console.error("Vue Devtools failed to install:", e.toString());
-    }
-  }
+  // if (isDevelopment && !process.env.IS_TEST) {
+  //   // Install Vue Devtools
+  //   try {
+  //     await installExtension(VUEJS_DEVTOOLS);
+  //   } catch (e) {
+  //     console.error("Vue Devtools failed to install:", e.toString());
+  //   }
+  // }
   createWindow();
 });
 

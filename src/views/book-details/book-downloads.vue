@@ -2,7 +2,7 @@
  * @Author: 翁恺敏
  * @Date: 2022-02-08 14:37:09
  * @LastEditors: 翁恺敏
- * @LastEditTime: 2022-02-27 17:19:55
+ * @LastEditTime: 2022-02-28 00:28:42
  * @FilePath: /vue-book-reader/src/views/book-details/book-downloads.vue
  * @Description: 
  -->
@@ -54,10 +54,13 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style scoped lang="scss">
 .book-details-downloads-item {
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
+  & + & {
+    margin-top: 5px;
+  }
 }
 </style>

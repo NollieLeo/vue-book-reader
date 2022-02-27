@@ -1,2 +1,2 @@
 export * from "./file-downloads";
-export * from "./window-events";
+export * from "./window-opts-events";

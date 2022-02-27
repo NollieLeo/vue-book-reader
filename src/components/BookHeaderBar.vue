@@ -1,3 +1,11 @@
+<!--
+ * @Author: 翁恺敏
+ * @Date: 2022-02-08 14:37:09
+ * @LastEditors: 翁恺敏
+ * @LastEditTime: 2022-02-28 00:31:04
+ * @FilePath: /vue-book-reader/src/components/BookHeaderBar.vue
+ * @Description: 
+ -->
 <template>
   <div class="book-header-bar">
     <a-button
@@ -39,6 +47,7 @@ export default {
 .book-header-bar {
   display: flex;
   align-items: center;
+  padding-top: 10px;
 }
 .book-header-bar .ant-btn {
   margin-right: 10px;

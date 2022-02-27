@@ -4,10 +4,11 @@
     <a-modal
       maskClosable
       :footer="null"
+      v-if="bookDetail.resources && bookDetail.resources.length"
       v-model="downLoadModalVisible"
       title="下载电子书"
     >
-      <book-downloads :resources="bookDetail.resources || []" />
+      <book-downloads :resources="bookDetail.resources" />
     </a-modal>
     <aside class="book-details-buttons">
       <a-button
@@ -23,14 +24,18 @@
       </header>
       <main>
         <section class="book-details-detailBox">
-          <img
-            :src="
-              bookDetail.coverKey
-                ? `https://file.ituring.com.cn/LargeCover/${bookDetail.coverKey}`
-                : 'https://www.ituring.com.cn/img/img-load.020f1e39.png'
-            "
-            alt=""
-          />
+          <div class="book-details-detailBox-img">
+            <img
+              :src="
+                bookDetail.coverKey
+                  ? `https://file.ituring.com.cn/LargeCover/${bookDetail.coverKey}`
+                  : 'https://www.ituring.com.cn/img/img-load.020f1e39.png'
+              "
+              alt=""
+              @click="handleImgPreview(bookDetail)"
+            />
+            <div class="book-details-detailBox-img-shadow"></div>
+          </div>
           <div style="flex: 1; margin-left: 40px">
             <h5>{{ bookDetail.pressName }}</h5>
             <h1>{{ bookDetail.name }}</h1>
@@ -102,6 +107,7 @@ import BookChapter from "./book-chapter.vue";
 import BookIntroduce from "./book-introduce.vue";
 import BookDownloads from "./book-downloads.vue";
 import { shell } from "electron";
+import { handleNewWindow } from "@/services/rendereer";
 
 const priceType = {
   saleAmazonUrl: "亚马逊",
@@ -145,6 +151,11 @@ export default {
     },
   },
   methods: {
+    /**
+     * @description: 加载book的数据
+     * @param {*}
+     * @return {*}
+     */
     async loadCurrentBookDetails() {
       this.isFetching = true;
       try {
@@ -163,12 +174,34 @@ export default {
       return priceType[type] || "-";
     },
 
-    // 通过系统自带的浏览器打开网页
+    /**
+     * @description: 通过系统自带的浏览器打开网页
+     * @param {*} e
+     * @param {*} url
+     * @return {*}
+     */
     openPriceLinkThroughDefaultBrowser(e, url) {
       e.preventDefault();
       shell.openExternal(url);
     },
+
+    /**
+     * @description: 图书的封面预览
+     * @param {*} bookDetails
+     * @return {*}
+     */
+    handleImgPreview(bookDetails) {
+      const { coverKey } = bookDetails;
+      if (!coverKey) return;
+      const concatUrl = `https://file.ituring.com.cn/LargeCover/${coverKey}`;
+      const winConfig = {
+        url: concatUrl,
+        width: 440,
+        height: 570,
+      };
+      handleNewWindow(winConfig);
+    },
   },
 };
 </script>
-<style src="./index.css"></style>
+<style lang="scss" src="./index.scss"></style>
