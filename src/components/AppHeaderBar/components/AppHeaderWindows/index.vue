@@ -33,4 +33,4 @@ export default {
   mixins: [AppHeaderMixins],
 };
 </script>
-<style lang=""></style>
+<style lang="scss" src="./index.scss"></style>
